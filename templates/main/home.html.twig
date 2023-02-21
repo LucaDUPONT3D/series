@@ -3,10 +3,27 @@
 
 {# parent() permet de récupérer ce que contient le block de la base #}
 {% block title %}
-{{ parent() }} | Home
+    {{ parent() }} | Home
 {% endblock %}
 
 {# si je redéfinis le contenu, j'écrase le contenu présent dans la base #}
 {% block body %}
-    <h1>Welcome to Series !</h1>
+
+    <h1>Welcome to Series {{ name }} !</h1>
+
+    <div>{{ name }}</div>
+
+    {# raw pour désactiver la protection XSS #}
+    <div>{{ name | raw }}</div>
+
+    {# striptags pour supprimer le code html #}
+    <div>{{ name | striptags }}</div>
+
+    <h2>Serie's detail</h2>
+    <ul>
+        {% for key,val in serie %}
+            <li>{{ key | capitalize}} : {{ val }}</li>
+        {% endfor %}
+    </ul>
+
 {% endblock %}
