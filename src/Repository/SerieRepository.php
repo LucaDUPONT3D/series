@@ -39,28 +39,23 @@ class SerieRepository extends ServiceEntityRepository
         }
     }
 
-//    /**
-//     * @return Serie[] Returns an array of Serie objects
-//     */
-//    public function findByExampleField($value): array
-//    {
-//        return $this->createQueryBuilder('s')
-//            ->andWhere('s.exampleField = :val')
-//            ->setParameter('val', $value)
-//            ->orderBy('s.id', 'ASC')
-//            ->setMaxResults(10)
-//            ->getQuery()
-//            ->getResult()
-//        ;
-//    }
+    public function findBestSeries(){
 
-//    public function findOneBySomeField($value): ?Serie
-//    {
-//        return $this->createQueryBuilder('s')
-//            ->andWhere('s.exampleField = :val')
-//            ->setParameter('val', $value)
-//            ->getQuery()
-//            ->getOneOrNullResult()
-//        ;
-//    }
+        //En DQL
+        //récupération des séries avec un vote supérieur à 8 et une popularité supérieur à 500 ordonné par popularité
+
+//        $dql = "SELECT s FROM App\Entity\Serie s WHERE s.vote > 8 AND s.popularity > 100 ORDER BY s.popularity DESC ";
+//
+//        //transforme le string en objet de requète
+//        $query = $this->getEntityManager()->createQuery($dql);
+//
+//        //ajoute une limite de résultat
+//        $query->setMaxResults(50);
+
+        //En queryBuilder
+        return $this->createQueryBuilder('s')->andWhere('s.vote > 8')->andWhere('s.popularity > 100')
+                ->addOrderBy('s.popularity', 'DESC')->setMaxResults(50)->getQuery()->getResult();
+
+    }
+
 }
