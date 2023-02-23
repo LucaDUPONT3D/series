@@ -134,7 +134,7 @@ textarea{
 }
 
 .flash-success {
-    background-color: lawngreen
+    background-color: darkgreen;
 }
 
 .flash-error {

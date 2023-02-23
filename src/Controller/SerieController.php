@@ -3,10 +3,10 @@
 namespace App\Controller;
 
 use App\Entity\Serie;
+use App\Form\SerieType;
 use App\Repository\SerieRepository;
-use Doctrine\ORM\EntityManagerInterface;
-use phpDocumentor\Reflection\Types\Integer;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 
@@ -16,11 +16,11 @@ class SerieController extends AbstractController
     #[Route('/list', name: 'list')]
     public function list(SerieRepository $serieRepository): Response
     {
-        //$series = $serieRepository->findAll();
+        $series = $serieRepository->findAll();
         //$series = $serieRepository->findBy(["status"=> "ended"], ["popularity" => "DESC"], 10 , 10);
         //$series = $serieRepository->findBy([], ["vote" => "DESC"], 50);
         //$series = $serieRepository->findByStatus("ended");
-        $series = $serieRepository->findBestSeries();
+        //$series = $serieRepository->findBestSeries();
 
         dump($series);
 
@@ -32,48 +32,29 @@ class SerieController extends AbstractController
     {
         $serie = $serieRepository->find($id);
 
-        if (!$serie){
+        if (!$serie) {
             throw  $this->createNotFoundException("Oops ! Serie not found !");
         }
         return $this->render('serie/show.html.twig', ["serie"=>$serie]);
     }
 
     #[Route('/add', name: 'add')]
-    public function add(SerieRepository $serieRepository, EntityManagerInterface $entityManager): Response
+    public function add(SerieRepository $serieRepository, Request $request): Response
     {
 
         $serie = new Serie();
-        $serie
-            ->setName("Le magicien")
-            ->setBackdrop("backdrop.png")
-            ->setDateCreated(new \DateTime())
-            ->setGenres("Comedy")
-            ->setFirstAirDate(new \DateTime('2005-02-02'))
-            ->setLastAirDate(new \DateTime('-6 month'))
-            ->setPopularity(850.52)
-            ->setPoster("poster.png")
-            ->setTmdbId(123456)
-            ->setVote(8.5)
-            ->setStatus("ended");
+        $serieForm = $this->createForm(SerieType::class, $serie);
 
-        $entityManager->persist($serie);
-        $entityManager->flush();
+        $serieForm->handleRequest($request);
 
-        $serieRepository->remove($serie, true);
+        if ($serieForm->isSubmitted()) {
+            $serieRepository->save($serie, true);
 
-//        dump($serie);
-//
-//        $serieRepository->save($serie, true);
-//
-//        dump($serie);
-//
-//        $serie->setName("The last of us");
-//        $serieRepository->save($serie, true);
-//
-//        dump($serie);
+            $this->addFlash('success', "Serie added !");
 
+            return $this->redirectToRoute('serie_show', ['id' => $serie->getId()]);
+        }
 
-        //TODO Créer un formulaire d'ajout de série
-        return $this->render('serie/add.html.twig');
+        return $this->render('serie/add.html.twig', ['serieForm'=> $serieForm->createView()]);
     }
 }
