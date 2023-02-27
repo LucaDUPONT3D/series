@@ -4,6 +4,7 @@ namespace App\Repository;
 
 use App\Entity\Serie;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
+use Doctrine\ORM\Tools\Pagination\Paginator;
 use Doctrine\Persistence\ManagerRegistry;
 
 /**
@@ -16,6 +17,8 @@ use Doctrine\Persistence\ManagerRegistry;
  */
 class SerieRepository extends ServiceEntityRepository
 {
+    const SERIE_LIMIT = 80;
+
     public function __construct(ManagerRegistry $registry)
     {
         parent::__construct($registry, Serie::class);
@@ -39,23 +42,18 @@ class SerieRepository extends ServiceEntityRepository
         }
     }
 
-    public function findBestSeries(){
+    public function findBestSeries(int $page)
+    {
+        $offset = ($page - 1) * self::SERIE_LIMIT;
 
-        //En DQL
-        //récupération des séries avec un vote supérieur à 8 et une popularité supérieur à 500 ordonné par popularité
+        $query = $this->createQueryBuilder('ser');
+        $query->leftJoin('ser.seasons', 'sea')
+            ->addSelect('sea')
+            ->addOrderBy('ser.popularity', 'DESC')
+            ->setMaxResults(self::SERIE_LIMIT)
+            ->setFirstResult($offset)
+            ->getQuery();
 
-//        $dql = "SELECT s FROM App\Entity\Serie s WHERE s.vote > 8 AND s.popularity > 100 ORDER BY s.popularity DESC ";
-//
-//        //transforme le string en objet de requète
-//        $query = $this->getEntityManager()->createQuery($dql);
-//
-//        //ajoute une limite de résultat
-//        $query->setMaxResults(50);
-
-        //En queryBuilder
-        return $this->createQueryBuilder('s')->andWhere('s.vote > 8')->andWhere('s.popularity > 100')
-                ->addOrderBy('s.popularity', 'DESC')->setMaxResults(50)->getQuery()->getResult();
-
+        return new Paginator($query);
     }
-
 }

@@ -2,17 +2,14 @@
 {%  form_theme serieForm 'view/formTheme/formTheme.html.twig' %}
 
 {% block title %}
-{{ parent() }} | Add
+{{ parent() }} | Add Serie
 {% endblock %}
 
 {% block body %}
     <h2>Add New Serie</h2>
-
     {{ form_start(serieForm) }}
-
     {{ form_widget(serieForm) }}
     <button>Add</button>
-
     {{ form_end(serieForm)}}
 {% endblock %}
 
