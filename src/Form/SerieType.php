@@ -17,11 +17,11 @@ class SerieType extends AbstractType
     {
         $builder
             ->add('name', TextType::class)
-            ->add('overview', TextareaType::class, ['required' => false])
+            ->add('overview', TextareaType::class, ['required' => false ])
             ->add(
                 'status',
                 ChoiceType::class,
-                ['choices' => ['Ended' => 'ended', 'Returning' => 'returning', 'Canceleled' => 'canceleled'],
+                ['choices' => ['Ended' => 'ended', 'Returning' => 'returning', 'Canceled' => 'canceled'],
                     'expanded' => false, 'multiple' => false]
             )
             ->add('vote')
@@ -51,6 +51,7 @@ class SerieType extends AbstractType
     {
         $resolver->setDefaults([
             'data_class' => Serie::class,
+            'required'=>false
         ]);
     }
 }

@@ -17,13 +17,6 @@ class SerieController extends AbstractController
     public function list(SerieRepository $serieRepository): Response
     {
         $series = $serieRepository->findAll();
-        //$series = $serieRepository->findBy(["status"=> "ended"], ["popularity" => "DESC"], 10 , 10);
-        //$series = $serieRepository->findBy([], ["vote" => "DESC"], 50);
-        //$series = $serieRepository->findByStatus("ended");
-        //$series = $serieRepository->findBestSeries();
-
-        dump($series);
-
         return $this->render('serie/list.html.twig', ["series"=>$series]);
     }
 
@@ -47,7 +40,7 @@ class SerieController extends AbstractController
 
         $serieForm->handleRequest($request);
 
-        if ($serieForm->isSubmitted()) {
+        if ($serieForm->isSubmitted() && $serieForm->isValid()) {
             $serieRepository->save($serie, true);
 
             $this->addFlash('success', "Serie added !");
