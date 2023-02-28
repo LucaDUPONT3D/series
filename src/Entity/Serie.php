@@ -75,7 +75,7 @@ class Serie
     #[ORM\Column(type: Types::DATETIME_MUTABLE, nullable: true)]
     private ?\DateTimeInterface $dateModified = null;
 
-    #[ORM\OneToMany(mappedBy: 'serie', targetEntity: Season::class)]
+    #[ORM\OneToMany(mappedBy: 'serie', targetEntity: Season::class, cascade: ["remove"])]
     private Collection $seasons;
 
     public function __construct()
@@ -264,13 +264,10 @@ class Serie
 
     public function removeSeason(Season $season): self
     {
-        if ($this->seasons->removeElement($season)) {
+        if ($this->seasons->removeElement($season) && $season->getSerie() === $this) {
             // set the owning side to null (unless already changed)
-            if ($season->getSerie() === $this) {
-                $season->setSerie(null);
-            }
+            $season->setSerie(null);
         }
-
         return $this;
     }
 

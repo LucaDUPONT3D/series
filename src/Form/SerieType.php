@@ -6,10 +6,12 @@ use App\Entity\Serie;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\DateType;
+use Symfony\Component\Form\Extension\Core\Type\FileType;
 use Symfony\Component\Form\Extension\Core\Type\TextareaType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
+use Symfony\Component\Validator\Constraints\Image;
 
 class SerieType extends AbstractType
 {
@@ -17,7 +19,7 @@ class SerieType extends AbstractType
     {
         $builder
             ->add('name', TextType::class)
-            ->add('overview', TextareaType::class, ['required' => false ])
+            ->add('overview', TextareaType::class, ['required' => false])
             ->add(
                 'status',
                 ChoiceType::class,
@@ -29,7 +31,7 @@ class SerieType extends AbstractType
             ->add(
                 'genres',
                 ChoiceType::class,
-                ['choices' => ['Western' => 'Western', 'Comedy'=>'Comedy', 'Drama'=>'Drama']]
+                ['choices' => ['Western' => 'Western', 'Comedy' => 'Comedy', 'Drama' => 'Drama']]
             )
             ->add(
                 'firstAirDate',
@@ -39,19 +41,27 @@ class SerieType extends AbstractType
             ->add(
                 'lastAirDate',
                 DateType::class,
-                ['label'=> 'Last Air Date : ', 'html5' => true, 'widget' => 'single_text']
+                ['label' => 'Last Air Date : ', 'html5' => true, 'widget' => 'single_text']
             )
-            ->add('backdrop')
-            ->add('poster')
-            ->add('tmdbId')
-        ;
+            ->add(
+                'backdrop',
+                FileType::class,
+                ['mapped' => false, 'constraints' => [
+                    new Image([
+                        'maxSize' => '5000k',
+                        'mimeTypesMessage' => 'Image format not allowed !'
+                    ])]
+                ]
+            )
+            ->add('poster', FileType::class, ['mapped' => false])
+            ->add('tmdbId');
     }
 
     public function configureOptions(OptionsResolver $resolver): void
     {
         $resolver->setDefaults([
             'data_class' => Serie::class,
-            'required'=>false
+            'required' => false
         ]);
     }
 }

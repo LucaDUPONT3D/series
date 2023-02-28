@@ -28,9 +28,8 @@ class SerieController extends AbstractController
     }
 
     #[Route('/{id}', name: 'show', requirements: ['id' => '\d+'])]
-    public function show(Serie $id, SerieRepository $serieRepository): Response
+    public function show(Serie $id): Response
     {
-
         if (!$id) {
             throw  $this->createNotFoundException("Oops ! Serie not found !");
         }
@@ -47,6 +46,18 @@ class SerieController extends AbstractController
         $serieForm->handleRequest($request);
 
         if ($serieForm->isSubmitted() && $serieForm->isValid()) {
+
+            $poster = $serieForm->get("poster")->getData();
+            $backdrop = $serieForm->get("backdrop")->getData();
+
+            $newPosterName = $serie->getName() . "-" . uniqid() . "." . $poster->guessExtension();
+            $newBackdropName = $serie->getName() . "-" . uniqid() . "." . $backdrop->guessExtension();
+
+            $poster->move("img/posters/series", $newPosterName);
+            $backdrop->move("img/backdrops", $newBackdropName);
+
+            $serie->setPoster($newPosterName)->setBackdrop($newBackdropName);
+
             $serieRepository->save($serie, true);
 
             $this->addFlash('success', "Serie added !");

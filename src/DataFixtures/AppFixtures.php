@@ -16,13 +16,13 @@ class AppFixtures extends Fixture
         $this->addSeries($manager, $faker);
     }
 
-    public function addSeries(ObjectManager $manager, Generator $generator )
+    public function addSeries(ObjectManager $manager, Generator $generator)
     {
         for ($i = 0; $i < 50; $i++) {
             $serie = new Serie();
             $serie
                 ->setName(implode($generator->words(3)))
-                ->setVote($generator->numberBetween(0,10))
+                ->setVote($generator->numberBetween(0, 10))
                 ->setStatus($generator->randomElement(["ended", "returning", "canceled"]))
                 ->setPoster("poster.png")
                 ->setBackdrop("backdrop.png")

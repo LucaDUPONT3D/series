@@ -42,7 +42,7 @@ class SerieRepository extends ServiceEntityRepository
         }
     }
 
-    public function findBestSeries(int $page)
+    public function findBestSeries(int $page): Paginator
     {
         $offset = ($page - 1) * self::SERIE_LIMIT;
 

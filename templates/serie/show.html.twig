@@ -35,7 +35,7 @@
         </div>
     </div>
     <div class="flex_div">
-        <a class="link_button" href="{{ path('serie_remove', {'id': serie.id}) }}">Delete</a>
+        <a class="link_button" href="{{ path('serie_remove', {'id': serie.id}) }}" onclick="return confirm('Are you sure to remove this serie : {{ serie.name }}')">Delete</a>
     </div>
 {% endblock %}
 
