@@ -33,7 +33,7 @@ class SeasonType extends AbstractType
                     'query_builder' => function (SerieRepository $serieRepository) {
                         return $serieRepository->createQueryBuilder('s')->addOrderBy('s.name');
                     },
-                    'label' => 'Assciated serie']
+                    'label' => 'Associated serie']
             );
     }
 
