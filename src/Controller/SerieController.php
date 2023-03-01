@@ -5,6 +5,7 @@ namespace App\Controller;
 use App\Entity\Serie;
 use App\Form\SerieType;
 use App\Repository\SerieRepository;
+use App\Utils\Uploader;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
@@ -38,7 +39,7 @@ class SerieController extends AbstractController
     }
 
     #[Route('/add', name: 'add')]
-    public function add(SerieRepository $serieRepository, Request $request): Response
+    public function add(SerieRepository $serieRepository, Request $request, Uploader $uploader): Response
     {
 
         $serie = new Serie();
@@ -51,13 +52,15 @@ class SerieController extends AbstractController
             $poster = $serieForm->get("poster")->getData();
             $backdrop = $serieForm->get("backdrop")->getData();
 
-            $newPosterName = $serie->getName() . "-" . uniqid() . "." . $poster->guessExtension();
-            $newBackdropName = $serie->getName() . "-" . uniqid() . "." . $backdrop->guessExtension();
-
-            $poster->move("img/posters/series", $newPosterName);
-            $backdrop->move("img/backdrops", $newBackdropName);
-
-            $serie->setPoster($newPosterName)->setBackdrop($newBackdropName);
+            $serie
+                ->setPoster($uploader->upload(
+                    $poster,
+                    $this->getParameter('upload_serie_poster'),
+                    $serie->getName()))
+                ->setBackdrop($uploader->upload(
+                    $backdrop,
+                    $this->getParameter('upload_serie_backdrop'),
+                    $serie->getName()));
 
             $serieRepository->save($serie, true);
 
