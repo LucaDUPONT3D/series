@@ -70,8 +70,11 @@ nav li {
     margin-right: 1rem;
 }
 
-
-
+.like_button{
+    background: transparent;
+    border: none !important;
+    color: white;
+}
 
 /********************** Module  5  Doctrine   **************************/
 
