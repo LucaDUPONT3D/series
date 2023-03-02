@@ -6,10 +6,9 @@
 {% endblock %}
 
 {% block body %}
-    <h2>Add New Serie</h2>
-    {{ form_start(serieForm) }}
-    {{ form_widget(serieForm) }}
-    <button>Add</button>
-    {{ form_end(serieForm)}}
+    {% embed 'bodyStructures/form/serieForm.html.twig' %}
+        {% block formTitle %}Add a Serie{% endblock %}
+        {% block buttonLabel %}Add{% endblock %}
+    {% endembed %}
 {% endblock %}
 

@@ -52,15 +52,21 @@ class SerieController extends AbstractController
             $poster = $serieForm->get("poster")->getData();
             $backdrop = $serieForm->get("backdrop")->getData();
 
-            $serie
-                ->setPoster($uploader->upload(
-                    $poster,
-                    $this->getParameter('upload_serie_poster'),
-                    $serie->getName()))
-                ->setBackdrop($uploader->upload(
-                    $backdrop,
-                    $this->getParameter('upload_serie_backdrop'),
-                    $serie->getName()));
+            if ($poster !== null) {
+                $serie
+                    ->setPoster($uploader->upload(
+                        $poster,
+                        $this->getParameter('upload_serie_poster'),
+                        $serie->getName()));
+            }
+
+            if ($backdrop !== null) {
+                $serie
+                    ->setBackdrop($uploader->upload(
+                        $backdrop,
+                        $this->getParameter('upload_serie_backdrop'),
+                        $serie->getName()));
+            }
 
             $serieRepository->save($serie, true);
 
@@ -84,5 +90,45 @@ class SerieController extends AbstractController
         }
 
         return $this->redirectToRoute('serie_list');
+    }
+
+    #[Route('/update/{id}', name: 'update')]
+    public function update(SerieRepository $serieRepository, Serie $id, Request $request, Uploader $uploader): Response
+    {
+
+        $serieForm = $this->createForm(SerieType::class, $id);
+
+        $serieForm->handleRequest($request);
+
+        if ($serieForm->isSubmitted() && $serieForm->isValid()) {
+
+            $poster = $serieForm->get("poster")->getData();
+            $backdrop = $serieForm->get("backdrop")->getData();
+
+            if ($poster !== null) {
+                $id
+                    ->setPoster($uploader->upload(
+                        $poster,
+                        $this->getParameter('upload_serie_poster'),
+                        $id->getName()));
+            }
+
+            if ($backdrop !== null) {
+                $id
+                    ->setBackdrop($uploader->upload(
+                        $backdrop,
+                        $this->getParameter('upload_serie_backdrop'),
+                        $id->getName()));
+            }
+
+            $serieRepository->save($id, true);
+
+            $this->addFlash('success', "Serie updated !");
+
+            return $this->redirectToRoute('serie_show', ['id' => $id->getId()]);
+        }
+
+        return $this->render('serie/update.html.twig', ['serieForm'=> $serieForm->createView()]);
+
     }
 }

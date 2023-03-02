@@ -1,0 +1,13 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+    {% embed 'bodyStructures/form/serieForm.html.twig' %}
+        {% block formTitle %}Update a Serie{% endblock %}
+        {% block buttonLabel %}Update{% endblock %}
+    {% endembed %}
+{% endblock %}
+
+{% block title %}
+    {{ parent() }} | Update Serie
+{% endblock %}
+

@@ -13,14 +13,7 @@
 <body>
 {%  block style %}{% endblock %}
 <div class="container">
-    <header>
-        <h1>
-            <a href="{{ path('main_home') }}">
-                <img src="{{ asset('img/logo.svg') }}" alt="Series | Home">
-            </a>
-        </h1>
-        {% include("menu/nav.html.twig") %}
-    </header>
+    {% include("bodyStructures/header.html.twig") %}
     <main>
         {% for label, messages in app.flashes %}
             {% for message in messages %}
@@ -33,8 +26,9 @@
         {% block body %}{% endblock %}
     </main>
     <footer>
-        {% include("menu/nav.html.twig") %}
+        {% include("bodyStructures/footer.html.twig") %}
     </footer>
 </div>
+{% block js %}{% endblock %}
 </body>
 </html>
